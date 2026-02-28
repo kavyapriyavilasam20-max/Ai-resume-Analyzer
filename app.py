@@ -1,18 +1,18 @@
 import streamlit as st
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import pdfplumber  # better PDF text extraction
+import pdfplumber  # reliable PDF text extraction
 
 # ----------------------
 # Function to extract text from PDF
 # ----------------------
-import PyPDF2
-
 def extract_text_from_pdf(pdf_file):
-    pdf_reader = PyPDF2.PdfReader(pdf_file)
     text = ""
-    for page in pdf_reader.pages:
-        text += page.extract_text() + " "
+    with pdfplumber.open(pdf_file) as pdf:
+        for page in pdf.pages:
+            page_text = page.extract_text()
+            if page_text:
+                text += page_text + " "
     return text
 
 # ----------------------
