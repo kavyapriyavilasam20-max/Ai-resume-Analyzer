@@ -1,18 +1,18 @@
 import streamlit as st
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import pdfplumber  # reliable PDF text extraction
+import PyPDF2  # Works on Streamlit Cloud
 
 # ----------------------
 # Function to extract text from PDF
 # ----------------------
 def extract_text_from_pdf(pdf_file):
+    pdf_reader = PyPDF2.PdfReader(pdf_file)
     text = ""
-    with pdfplumber.open(pdf_file) as pdf:
-        for page in pdf.pages:
-            page_text = page.extract_text()
-            if page_text:
-                text += page_text + " "
+    for page in pdf_reader.pages:
+        page_text = page.extract_text()
+        if page_text:
+            text += page_text + " "
     return text
 
 # ----------------------
@@ -45,7 +45,7 @@ job_description = st.text_area("Paste Job Description Here", height=200)
 
 if uploaded_file and job_description:
     resume_text = extract_text_from_pdf(uploaded_file)
-    st.text_area("📄 Extracted Resume Text (debug)", resume_text, height=200)  # shows extracted text
+    st.text_area("📄 Extracted Resume Text (debug)", resume_text, height=200)  # Shows extracted text
     resume_text_clean = clean_text(resume_text)
     job_description_clean = clean_text(job_description)
 
